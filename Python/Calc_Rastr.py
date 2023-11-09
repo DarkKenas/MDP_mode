@@ -69,14 +69,15 @@ class Rastr_Calc_class:
         # Создание необходимых массивов
         mass_emerg_P = []
         I_mass = []
-        # Занесение первых значенией
+
+        # Занесение первых значенией P, I, step
         mass_emerg_P.append(self.psech.Z(0))
         for i in ind_vetv:
             mini = []
             mini.append(self.i_max.Z(i)*1000)
             I_mass.append(mini)
 
-        # Функция заполнения
+        # Функция заполнения значений тока для каждой ветви
         def I_mass_func():
             k = 0
             for i in ind_vetv:
@@ -89,6 +90,7 @@ class Rastr_Calc_class:
             return ("Ошибка")
         mass_emerg_P.append(self.psech.Z(0))
         I_mass_func()
+        
 
         # Цикл утяжеления ПА
         while check == 0:

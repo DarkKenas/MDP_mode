@@ -1,7 +1,7 @@
 import sqlite3 as sl
 
 # Создание и/или подключение файла БД
-bd = sl.connect("Python//data.db")
+bd = sl.connect("DataBase//Rastr_data.db")
 cur = bd.cursor()
 # Создание новой таблицы и стобцов
 
@@ -27,6 +27,7 @@ def new_tab(name, vetv=False):
                     col = 'AlTER TABLE '+name+' ADD COLUMN '+vl
                     bd.execute(col)
 
+
 # ------------------------------------------------
 # Функции вноса данных
 # Значения P
@@ -36,14 +37,14 @@ def data_P(name, mass_P):
     with bd:
         # Предварительная чистка таблицы
         bd.execute("DELETE FROM "+name)
+        # Список индексов
         ind = [(x,) for x in range(1, len(mass_P)+1)]
         # Вносим индексы значений
         new_data_ind = "INSERT INTO "+name+" (id) values(?)"
         bd.executemany(new_data_ind, ind)
         # Обновляем значения P
         for i in ind:
-            bd.execute(f"UPDATE {name} SET P_sech=? WHERE id={
-                       i[0]}", (mass_P[i[0]-1],))
+            bd.execute(f"UPDATE {name} SET P_sech=? WHERE id={i[0]}", (mass_P[i[0]-1],))
 
 # ------------------------------------------------
 # Значения I
@@ -61,6 +62,5 @@ def data_I(name, mass_I, vetv):
         # Обновление данных I в ветвях
         for vl in vetv:
             for i in ind:
-                bd.execute(f"UPDATE {name} SET {vl}= ? WHERE id={
-                           i[0]}", (mass_I[k][i[0]-1],))
+                bd.execute(f"UPDATE {name} SET {vl}= ? WHERE id={i[0]}", (mass_I[k][i[0]-1],))
             k += 1
