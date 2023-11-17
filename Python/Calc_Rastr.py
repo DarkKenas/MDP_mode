@@ -27,29 +27,20 @@ class Rastr_Calc_class:
         self.Rastr.step_ut("i")
         print("Файлы загружены\nНачинаю выполнение")
 
-    # ОПРЕДЕЛЕНИЕ МДП ПО СТАТИЧЕСКОЙ УСТОЙЧИВОСТИ
-    # Утяжеление исходного режима
-    def norm_mode(self):
-        mass_norm_P = []        # Массив значений P через сечение
-        # Создание массива значений и занесение первого элемента
-        mass_norm_P.append(self.psech.Z(0))
+    # ОПРЕДЕЛЕНИЕ ЗНАЧЕНИЙ P, I, на каждом шаге утяжеления
 
-        # Переменная для проверки выполнения шага утяжеления
-        check_norm = self.Rastr.step_ut('')
-        if check_norm != 0:
-            return ("Ошибка")
-        mass_norm_P.append(self.psech.Z(0))
-
-        # Цикл нахождения значений через сечение
-        while check_norm == 0:
-            check_norm = self.Rastr.step_ut('')
-            mass_norm_P.append(self.psech.Z(0))
-        return mass_norm_P
-
-    # Утяжеление ПА
-    def emerg_mode(self, element, vetv):
-        print("Обработка НВ")
-        # Массив значений для разных температур
+    def calc_mode(self, vetv, element=False, off_els=False):
+        
+        # Введение ремонта
+        if off_els!=False:
+            # Отключение узлов
+            for i in off_els:
+                self.node.SetSel("ny="+str(i))
+                # Получаем индексы узлов
+                self.index = self.node.FindNextSel(-1)
+                self.sta_node.SetZ(self.index, True)      # Отключаем их
+            self.Rastr.rgm('')
+        
         ind_vetv = []     # Массив индексов ветвей
 
         # Цикл определения индексов ветвей
@@ -58,20 +49,21 @@ class Rastr_Calc_class:
                              "&iq=" + str(i[1]) + "&np="+str(i[2]))
             ind_vetv.append(self.vetv.FindNextSel(-1))
 
-        # Отключение узлов
-        for i in element:
-            self.node.SetSel("ny="+str(i))
-            # Получаем индексы узлов
-            self.index = self.node.FindNextSel(-1)
-            self.sta_node.SetZ(self.index, True)      # Отключаем их
-        self.Rastr.rgm('')
+        if element!=False:
+            # Отключение узлов
+            for i in element:
+                self.node.SetSel("ny="+str(i))
+                # Получаем индексы узлов
+                self.index = self.node.FindNextSel(-1)
+                self.sta_node.SetZ(self.index, True)      # Отключаем их
+            self.Rastr.rgm('')
 
         # Создание необходимых массивов
-        mass_emerg_P = []
+        mass_P = []
         I_mass = []
 
-        # Занесение первых значенией P, I, step
-        mass_emerg_P.append(self.psech.Z(0))
+        # Занесение первых значенией P, I
+        mass_P.append(self.psech.Z(0))
         for i in ind_vetv:
             mini = []
             mini.append(self.i_max.Z(i)*1000)
@@ -88,14 +80,14 @@ class Rastr_Calc_class:
         check = self.Rastr.step_ut('')
         if check != 0:
             return ("Ошибка")
-        mass_emerg_P.append(self.psech.Z(0))
+        mass_P.append(self.psech.Z(0))
         I_mass_func()
         
 
-        # Цикл утяжеления ПА
+        # Цикл утяжеления режима
         while check == 0:
             check = self.Rastr.step_ut('')
-            mass_emerg_P.append(self.psech.Z(0))
+            mass_P.append(self.psech.Z(0))
             I_mass_func()
 
-        return [mass_emerg_P, I_mass]
+        return [mass_P, I_mass]

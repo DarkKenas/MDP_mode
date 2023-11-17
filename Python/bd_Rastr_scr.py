@@ -64,3 +64,4 @@ def data_I(name, mass_I, vetv):
             for i in ind:
                 bd.execute(f"UPDATE {name} SET {vl}= ? WHERE id={i[0]}", (mass_I[k][i[0]-1],))
             k += 1
+
