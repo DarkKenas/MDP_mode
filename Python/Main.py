@@ -1,8 +1,6 @@
 from MDP_Calc import MDP_data
-from Calc_to_bd import Calc_to_bd as calc
+from ValueRastr_to_bd import Calc_to_bd as calc
 from Excel_scr import Full_rep as rep
-import pandas as pd
-import bd_MDP_scr as bM
 
 
 # Исходные файлы
@@ -38,7 +36,7 @@ fluc = 150
 # (Для необходимого расчета заменить "False" на "True")
 
 calc("Norm_scheme", mode, trajectory, sech,
-     elements, vetvs, False, nm=False, em=False)
+     elements, vetvs, False, norm_mode=False, emerge_mode=False)
 
 
 # -------------------------------------------------------------
@@ -76,7 +74,7 @@ I_set = [[1780, 1711, 1656, 1587, 1532, 1449, 1380, 1297, 1214, 1118],
 # Расчет
 name_tab = "Repair_1"
 calc(name_tab, mode, trajectory, sech, elements,
-     vetvs, off_els, nm=False, em=False)
+     vetvs, off_els, norm_mode=False, emerge_mode=False)
 
 # --------------------------------------------------------------
 # Сформировать отчёт в эксель
@@ -108,7 +106,7 @@ I_set = [[1780, 1711, 1656, 1587, 1532, 1449, 1380, 1297, 1214, 1118],
 # Расчет
 name_tab = "Repair_2"
 calc(name_tab, mode, trajectory, sech, elements,
-     vetvs, off_els, nm=False, em=False)
+     vetvs, off_els, norm_mode=False, emerge_mode=False)
 
 # -------------------------------------------------------------
 # Сформировать отчёт в эксель
@@ -122,5 +120,7 @@ if flag != False:
 # -------------------------------------------------------------
 # -------------------------------------------------------------
 # Создание отчёта в Excel
-name_tabs = "Norm_scheme"
-rep(name_tabs, path_excel)
+name_tabs_db = ["Norm_scheme","Repair_1","Repair_2"]
+name_tabs = ["Нормальная схема","Ремонт ВЛ 750 кВ Калининская АЭС - Ленинградская", "Ремонт ВЛ 750 кВ Белозерская - Ленинградская"]
+path_shabl = r"C:\Users\bukre\OneDrive\Рабочий стол\ОДУ\Расчет МДП на ПР\Файлы Excel\shabl_MDP.xlsx"
+rep(name_tabs_db=name_tabs_db, name_tabs=name_tabs)
